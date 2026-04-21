@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/disciplinas")
+@RequestMapping(    "/admin/disciplinas")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AdminDisciplinaController {
 
     private final DisciplinaService service;

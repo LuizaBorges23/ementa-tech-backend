@@ -59,7 +59,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Professor professor = new Professor();
         professor.setMatricula("2026001");
         professor.setNomeCompleto("Professor Exemplo");
-        professor.setEmail("professor@ucsal.edu.br");
+        professor.setEmail("professor@ementatech.com");
         professor.setTelefone("71999999999");
         professor.setAtivo(true);
         professor.setEscola(escola2);
