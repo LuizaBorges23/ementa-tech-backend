@@ -24,7 +24,7 @@ public class Escola {
     private Boolean ativo = true;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "ies_id", nullable = false)
+    @JoinColumn(name = "ies_vinculada", nullable = false)
     @JsonIgnoreProperties({"escolas"})
     private InstituicaoEnsinoSuperior ies;
 
