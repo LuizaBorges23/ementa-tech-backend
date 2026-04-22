@@ -30,9 +30,10 @@ public class Disciplina {
     @Column(nullable = false)
     private Boolean ativo = true;
 
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "escola_id", nullable = false)
-    @JsonIgnoreProperties({"cursos", "professores", "ies"})
+    @JsonIgnoreProperties({"cursos", "professores", "ies", "disciplinas"})
     private Escola escola;
 
     @ManyToMany
@@ -57,91 +58,38 @@ public class Disciplina {
     @JsonIgnoreProperties({"disciplina", "prerequisitos", "bibliografiasBasicas", "bibliografiasComplementares"})
     private List<ProgramaDisciplina> programaDisciplina = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getSigla() {
-        return sigla;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setSigla(String sigla) {
-        this.sigla = sigla;
-    }
+    public String getSigla() { return sigla; }
+    public void setSigla(String sigla) { this.sigla = sigla; }
 
-    public String getDescricao() {
-        return descricao;
-    }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+    public Integer getCargaHoraria() { return cargaHoraria; }
+    public void setCargaHoraria(Integer cargaHoraria) { this.cargaHoraria = cargaHoraria; }
 
-    public Integer getCargaHoraria() {
-        return cargaHoraria;
-    }
+    public LocalDate getDataCadastro() { return dataCadastro; }
+    public void setDataCadastro(LocalDate dataCadastro) { this.dataCadastro = dataCadastro; }
 
-    public void setCargaHoraria(Integer cargaHoraria) {
-        this.cargaHoraria = cargaHoraria;
-    }
+    public Boolean getAtivo() { return ativo; }
+    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
 
-    public LocalDate getDataCadastro() {
-        return dataCadastro;
-    }
+    public Escola getEscola() { return escola; }
+    public void setEscola(Escola escola) { this.escola = escola; }
 
-    public void setDataCadastro(LocalDate dataCadastro) {
-        this.dataCadastro = dataCadastro;
-    }
+    public List<Curso> getCursos() { return cursos; }
+    public void setCursos(List<Curso> cursos) { this.cursos = cursos; }
 
-    public Boolean getAtivo() {
-        return ativo;
-    }
+    public List<Matriz> getMatrizes() { return matrizes; }
+    public void setMatrizes(List<Matriz> matrizes) { this.matrizes = matrizes; }
 
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
-    }
+    public Professor getProfessor() { return professor; }
+    public void setProfessor(Professor professor) { this.professor = professor; }
 
-    public Escola getEscola() {
-        return escola;
-    }
-
-    public void setEscola(Escola escola) {
-        this.escola = escola;
-    }
-
-    public List<Curso> getCursos() {
-        return cursos;
-    }
-
-    public void setCursos(List<Curso> cursos) {
-        this.cursos = cursos;
-    }
-
-    public List<Matriz> getMatrizes() {
-        return matrizes;
-    }
-
-    public void setMatrizes(List<Matriz> matrizes) {
-        this.matrizes = matrizes;
-    }
-
-    public Professor getProfessor() {
-        return professor;
-    }
-
-    public void setProfessor(Professor professor) {
-        this.professor = professor;
-    }
-
-    public List<ProgramaDisciplina> getProgramaDisciplina() {
-        return programaDisciplina;
-    }
-
-    public void setProgramaDisciplina(List<ProgramaDisciplina> programaDisciplina) {
-        this.programaDisciplina = programaDisciplina;
-    }
+    public List<ProgramaDisciplina> getProgramaDisciplina() { return programaDisciplina; }
+    public void setProgramaDisciplina(List<ProgramaDisciplina> programaDisciplina) { this.programaDisciplina = programaDisciplina; }
 }

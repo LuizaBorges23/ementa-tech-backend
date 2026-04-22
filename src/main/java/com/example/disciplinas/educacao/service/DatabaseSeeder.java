@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class DatabaseSeeder implements CommandLineRunner {
@@ -97,7 +99,9 @@ public class DatabaseSeeder implements CommandLineRunner {
         disciplina.setAtivo(true);
         disciplina.setEscola(escola2);
         disciplina.setProfessor(professor);
-        disciplina.getCursos().add(curso);
+        List<Curso> listaCursos = new ArrayList<>();
+        listaCursos.add(curso);
+        disciplina.setCursos(listaCursos);
         disciplina = disciplinaRepository.save(disciplina);
 
         ProgramaDisciplina programa = new ProgramaDisciplina();
