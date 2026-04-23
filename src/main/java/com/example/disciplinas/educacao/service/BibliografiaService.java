@@ -26,10 +26,10 @@ public class BibliografiaService {
     }
 
     public BibliografiaBasica adicionarBasica(Long programaId, BibliografiaRequest request) {
-        ProgramaDisciplina programa = programaDisciplinaService.buscar(programaId);
+        ProgramaDisciplina programa = programaDisciplinaService.buscarEntidade(programaId);
         long quantidade = bibliografiaBasicaRepository.countByProgramaDisciplinaId(programaId);
         if (quantidade >= 3) {
-            throw new BusinessRuleException("O programa já possui as 3 bibliografias básicas exigidas");
+            throw new BusinessRuleException("O programa ja possui as 3 bibliografias basicas exigidas");
         }
         validarLocalizacao(request);
         BibliografiaBasica bibliografia = new BibliografiaBasica();
@@ -46,10 +46,10 @@ public class BibliografiaService {
     }
 
     public BibliografiaComplementar adicionarComplementar(Long programaId, BibliografiaRequest request) {
-        ProgramaDisciplina programa = programaDisciplinaService.buscar(programaId);
+        ProgramaDisciplina programa = programaDisciplinaService.buscarEntidade(programaId);
         long quantidade = bibliografiaComplementarRepository.countByProgramaDisciplinaId(programaId);
         if (quantidade >= 5) {
-            throw new BusinessRuleException("O programa já possui as 5 bibliografias complementares exigidas");
+            throw new BusinessRuleException("O programa ja possui as 5 bibliografias complementares exigidas");
         }
         validarLocalizacao(request);
         BibliografiaComplementar bibliografia = new BibliografiaComplementar();
@@ -66,11 +66,13 @@ public class BibliografiaService {
     }
 
     private void validarLocalizacao(BibliografiaRequest request) {
-        if (request.getLocalizacao() == LocalizacaoBibliografia.DIGITAL && (request.getLinkLivro() == null || request.getLinkLivro().isBlank())) {
-            throw new BusinessRuleException("Quando a localização for DIGITAL, o link do livro é obrigatório");
+        if (request.getLocalizacao() == LocalizacaoBibliografia.DIGITAL
+                && (request.getLinkLivro() == null || request.getLinkLivro().isBlank())) {
+            throw new BusinessRuleException("Quando a localizacao for DIGITAL, o link do livro e obrigatorio");
         }
-        if (request.getLocalizacao() == LocalizacaoBibliografia.FISICO && (request.getPosicaoEstante() == null || request.getPosicaoEstante().isBlank())) {
-            throw new BusinessRuleException("Quando a localização for FISICO, a posição na estante é obrigatória");
+        if (request.getLocalizacao() == LocalizacaoBibliografia.FISICO
+                && (request.getPosicaoEstante() == null || request.getPosicaoEstante().isBlank())) {
+            throw new BusinessRuleException("Quando a localizacao for FISICO, a posicao na estante e obrigatoria");
         }
     }
 }

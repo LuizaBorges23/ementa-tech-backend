@@ -1,6 +1,7 @@
 package com.example.disciplinas.educacao.controller;
 
 import com.example.disciplinas.educacao.dto.ProgramaDisciplinaRequest;
+import com.example.disciplinas.educacao.dto.ProgramaDisciplinaResponse;
 import com.example.disciplinas.educacao.entity.ProgramaDisciplina;
 import com.example.disciplinas.educacao.service.ProgramaDisciplinaService;
 import jakarta.validation.Valid;
@@ -21,12 +22,12 @@ public class AdminProgramaDisciplinaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProgramaDisciplina>> listar() {
+    public ResponseEntity<List<ProgramaDisciplinaResponse>> listar() {
         return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProgramaDisciplina> buscar(@PathVariable Long id) {
+    public ResponseEntity<ProgramaDisciplinaResponse> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscar(id));
     }
 

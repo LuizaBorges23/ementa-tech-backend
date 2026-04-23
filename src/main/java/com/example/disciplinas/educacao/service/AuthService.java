@@ -24,14 +24,32 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-        Usuario usuario = usuarioRepository.findByUsername(authentication.getName()).orElseThrow();
-        String nomeProfessor = usuario.getProfessor() != null ? usuario.getProfessor().getNomeCompleto() : null;
-        return new AuthResponse(usuario.getUsername(), usuario.getRole().name(), nomeProfessor, "Autenticação realizada com sucesso. Use Basic Auth nas próximas requisições.");
+
+        return buildResponse(authentication, "AutenticaÃ§Ã£o realizada com sucesso. Use Basic Auth nas prÃ³ximas requisiÃ§Ãµes.");
     }
 
-    public AuthResponse me(String username) {
-        Usuario usuario = usuarioRepository.findByUsername(username).orElseThrow();
+    public AuthResponse me(Authentication authentication) {
+        return buildResponse(authentication, "UsuÃ¡rio autenticado.");
+    }
+
+    private AuthResponse buildResponse(Authentication authentication, String mensagem) {
+        return usuarioRepository.findByUsername(authentication.getName())
+                .map(usuario -> fromUsuario(usuario, mensagem))
+                .orElseGet(() -> fromAuthentication(authentication, mensagem));
+    }
+
+    private AuthResponse fromUsuario(Usuario usuario, String mensagem) {
         String nomeProfessor = usuario.getProfessor() != null ? usuario.getProfessor().getNomeCompleto() : null;
-        return new AuthResponse(usuario.getUsername(), usuario.getRole().name(), nomeProfessor, "Usuário autenticado.");
+        return new AuthResponse(usuario.getUsername(), usuario.getRole().name(), nomeProfessor, mensagem);
+    }
+
+    private AuthResponse fromAuthentication(Authentication authentication, String mensagem) {
+        String role = authentication.getAuthorities().stream()
+                .findFirst()
+                .map(grantedAuthority -> grantedAuthority.getAuthority())
+                .orElse("ROLE_PROFESSOR");
+
+        String nomeProfessor = "ROLE_PROFESSOR".equals(role) ? "Professor Exemplo" : null;
+        return new AuthResponse(authentication.getName(), role, nomeProfessor, mensagem);
     }
 }

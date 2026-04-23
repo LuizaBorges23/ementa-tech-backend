@@ -1,6 +1,7 @@
 package com.example.disciplinas.educacao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -54,10 +55,12 @@ public class ProgramaDisciplina {
     private List<Disciplina> prerequisitos = new ArrayList<>();
 
     @OneToMany(mappedBy = "programaDisciplina", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @JsonIgnoreProperties({"programaDisciplina"})
     private List<BibliografiaBasica> bibliografiasBasicas = new ArrayList<>();
 
     @OneToMany(mappedBy = "programaDisciplina", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @JsonIgnoreProperties({"programaDisciplina"})
     private List<BibliografiaComplementar> bibliografiasComplementares = new ArrayList<>();
 

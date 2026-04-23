@@ -39,6 +39,7 @@ public class Curso {
     private Professor coordenadorCurso;
 
     @OneToMany(mappedBy = "curso")
+    @JsonIgnore
     @JsonIgnoreProperties({"curso", "disciplinas"})
     private List<Matriz> matrizes = new ArrayList<>();
 

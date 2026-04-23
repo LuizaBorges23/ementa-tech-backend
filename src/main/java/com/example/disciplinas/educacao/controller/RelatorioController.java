@@ -1,5 +1,6 @@
 package com.example.disciplinas.educacao.controller;
 
+import com.example.disciplinas.educacao.dto.ProgramaDisciplinaResponse;
 import com.example.disciplinas.educacao.entity.Curso;
 import com.example.disciplinas.educacao.entity.Escola;
 import com.example.disciplinas.educacao.entity.Professor;
@@ -9,7 +10,10 @@ import com.example.disciplinas.educacao.service.EscolaService;
 import com.example.disciplinas.educacao.service.ProfessorService;
 import com.example.disciplinas.educacao.service.ProgramaDisciplinaService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -48,12 +52,12 @@ public class RelatorioController {
     }
 
     @GetMapping("/programas")
-    public ResponseEntity<List<ProgramaDisciplina>> programas() {
+    public ResponseEntity<List<ProgramaDisciplinaResponse>> programas() {
         return ResponseEntity.ok(programaDisciplinaService.listar());
     }
 
     @GetMapping("/programas/{id}")
-    public ResponseEntity<ProgramaDisciplina> programaDetalhado(@PathVariable Long id) {
+    public ResponseEntity<ProgramaDisciplinaResponse> programaDetalhado(@PathVariable Long id) {
         return ResponseEntity.ok(programaDisciplinaService.buscar(id));
     }
 

@@ -25,6 +25,6 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<AuthResponse> me(Authentication authentication) {
-        return ResponseEntity.ok(authService.me(authentication.getName()));
+        return ResponseEntity.ok(authService.me(authentication));
     }
 }

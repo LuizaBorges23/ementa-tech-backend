@@ -36,6 +36,7 @@ public class Professor {
     private Escola escola;
 
     @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @JsonIgnoreProperties({"professor"})
     private List<FormacaoProfessor> formacoes = new ArrayList<>();
 
@@ -44,6 +45,7 @@ public class Professor {
     private List<Disciplina> disciplinas;
 
     @OneToOne(mappedBy = "professor")
+    @JsonIgnore
     @JsonIgnoreProperties({"professor"})
     private Usuario usuario;
 
