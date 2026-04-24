@@ -47,6 +47,11 @@ public class AdminProfessorController {
         return ResponseEntity.ok(service.inativar(id));
     }
 
+    @PatchMapping("/{id}/ativar")
+    public ResponseEntity<Professor> ativar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.ativar(id));
+    }
+
     @PostMapping("/{id}/formacoes")
     public ResponseEntity<FormacaoProfessor> adicionarFormacao(@PathVariable Long id, @Valid @RequestBody FormacaoProfessorRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.adicionarFormacaoAoProfessor(id, request));

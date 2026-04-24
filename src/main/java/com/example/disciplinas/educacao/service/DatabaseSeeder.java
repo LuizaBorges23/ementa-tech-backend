@@ -10,6 +10,7 @@ import com.example.disciplinas.educacao.entity.Matriz;
 import com.example.disciplinas.educacao.entity.Professor;
 import com.example.disciplinas.educacao.entity.ProgramaDisciplina;
 import com.example.disciplinas.educacao.entity.Usuario;
+import com.example.disciplinas.educacao.enums.CategoriaTitulacao;
 import com.example.disciplinas.educacao.enums.LocalizacaoBibliografia;
 import com.example.disciplinas.educacao.enums.RoleName;
 import com.example.disciplinas.educacao.repository.BibliografiaBasicaRepository;
@@ -133,7 +134,23 @@ public class DatabaseSeeder implements CommandLineRunner {
         );
 
         criarUsuarioAdmin();
-        criarUsuarioProfessor("professor1", "prof123", professorEngenharia);
+        criarUsuarioProfessor("osvaldo.melo@ementatech.com", "prof123", professorEngenharia);
+        criarUsuarioProfessor("joelma.pacheco@ementatech.com", "prof123", professorDireito);
+        criarUsuarioProfessor("carlos.leandro@ementatech.com", "prof123", professorMusica);
+        criarUsuarioProfessor("orivaldo.paranainfa@ementatech.com", "prof123", professorBiomedicina);
+
+        criarFormacaoProfessor(professorEngenharia, CategoriaTitulacao.GRADUACAO, "Universidade Federal da Bahia", "Ciencia da Computacao", 2011);
+        criarFormacaoProfessor(professorEngenharia, CategoriaTitulacao.MESTRADO, "Universidade de Sao Paulo", "Engenharia de Software", 2015);
+        criarFormacaoProfessor(professorEngenharia, CategoriaTitulacao.DOUTORADO, "Universidade Estadual de Campinas", "Computacao Aplicada", 2020);
+        criarFormacaoProfessor(professorDireito, CategoriaTitulacao.GRADUACAO, "Universidade Catolica do Salvador", "Direito", 2010);
+        criarFormacaoProfessor(professorDireito, CategoriaTitulacao.ESPECIALIZACAO, "Fundacao Getulio Vargas", "Direito Publico", 2013);
+        criarFormacaoProfessor(professorDireito, CategoriaTitulacao.MESTRADO, "Universidade Federal da Bahia", "Ciencias Juridicas", 2018);
+        criarFormacaoProfessor(professorMusica, CategoriaTitulacao.GRADUACAO, "Universidade Federal da Bahia", "Musica Popular", 2012);
+        criarFormacaoProfessor(professorMusica, CategoriaTitulacao.MBA, "Universidade Salvador", "Gestao Cultural", 2017);
+        criarFormacaoProfessor(professorMusica, CategoriaTitulacao.MESTRADO, "Universidade Federal do Rio de Janeiro", "Composicao Musical", 2021);
+        criarFormacaoProfessor(professorBiomedicina, CategoriaTitulacao.GRADUACAO, "Universidade Federal de Minas Gerais", "Biomedicina", 2011);
+        criarFormacaoProfessor(professorBiomedicina, CategoriaTitulacao.ESPECIALIZACAO, "Instituto Israelita Albert Einstein", "Analises Clinicas", 2014);
+        criarFormacaoProfessor(professorBiomedicina, CategoriaTitulacao.POS_DOUTORADO, "Fundacao Oswaldo Cruz", "Biotecnologia em Saude", 2023);
 
         Curso cursoEngenharia = criarCurso("BES", "Engenharia de Software", data(3, 1), escolaEngenharia, professorEngenharia);
         Curso cursoBiomedicina = criarCurso("BME", "Biomedicina", data(3, 1), escolaBiomedicina, professorBiomedicina);
@@ -207,6 +224,22 @@ public class DatabaseSeeder implements CommandLineRunner {
         usuario.setEnabled(true);
         usuario.setProfessor(professor);
         usuarioRepository.save(usuario);
+    }
+
+    private void criarFormacaoProfessor(Professor professor,
+                                        CategoriaTitulacao categoriaTitulacao,
+                                        String instituicaoConclusao,
+                                        String nomeCurso,
+                                        int anoConclusao) {
+        com.example.disciplinas.educacao.entity.FormacaoProfessor formacao =
+                new com.example.disciplinas.educacao.entity.FormacaoProfessor();
+        formacao.setProfessor(professor);
+        formacao.setCategoriaTitulacao(categoriaTitulacao);
+        formacao.setInstituicaoConclusao(instituicaoConclusao);
+        formacao.setNomeCurso(nomeCurso);
+        formacao.setAnoConclusao(anoConclusao);
+        professor.getFormacoes().add(formacao);
+        professorRepository.save(professor);
     }
 
     private Curso criarCurso(String sigla, String descricao, LocalDate dataCadastro, Escola escola, Professor coordenador) {

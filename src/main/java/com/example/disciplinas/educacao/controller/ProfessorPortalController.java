@@ -2,11 +2,11 @@ package com.example.disciplinas.educacao.controller;
 
 import com.example.disciplinas.educacao.dto.BibliografiaRequest;
 import com.example.disciplinas.educacao.dto.FormacaoProfessorRequest;
+import com.example.disciplinas.educacao.dto.ProfessorPortalResponse;
+import com.example.disciplinas.educacao.dto.ProgramaDisciplinaResponse;
 import com.example.disciplinas.educacao.entity.BibliografiaBasica;
 import com.example.disciplinas.educacao.entity.BibliografiaComplementar;
 import com.example.disciplinas.educacao.entity.FormacaoProfessor;
-import com.example.disciplinas.educacao.entity.Professor;
-import com.example.disciplinas.educacao.entity.ProgramaDisciplina;
 import com.example.disciplinas.educacao.service.BibliografiaService;
 import com.example.disciplinas.educacao.service.ProfessorService;
 import com.example.disciplinas.educacao.service.ProgramaDisciplinaService;
@@ -14,7 +14,12 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -35,8 +40,8 @@ public class ProfessorPortalController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Professor> meuCadastro(Authentication authentication) {
-        return ResponseEntity.ok(professorService.buscarPorUsername(authentication.getName()));
+    public ResponseEntity<ProfessorPortalResponse> meuCadastro(Authentication authentication) {
+        return ResponseEntity.ok(professorService.buscarPortalPorUsername(authentication.getName()));
     }
 
     @PostMapping("/me/formacoes")
@@ -47,13 +52,13 @@ public class ProfessorPortalController {
     }
 
     @GetMapping("/programas")
-    public ResponseEntity<List<ProgramaDisciplina>> meusProgramas(Authentication authentication) {
-        return ResponseEntity.ok(programaDisciplinaService.listarDoProfessor(authentication.getName(), professorService));
+    public ResponseEntity<List<ProgramaDisciplinaResponse>> meusProgramas(Authentication authentication) {
+        return ResponseEntity.ok(programaDisciplinaService.listarDoProfessorDetalhado(authentication.getName(), professorService));
     }
 
     @GetMapping("/programas/incompletos")
-    public ResponseEntity<List<ProgramaDisciplina>> programasIncompletos(Authentication authentication) {
-        return ResponseEntity.ok(programaDisciplinaService.listarIncompletosDoProfessor(authentication.getName(), professorService));
+    public ResponseEntity<List<ProgramaDisciplinaResponse>> programasIncompletos(Authentication authentication) {
+        return ResponseEntity.ok(programaDisciplinaService.listarIncompletosDoProfessorDetalhado(authentication.getName(), professorService));
     }
 
     @PostMapping("/programas/{programaId}/bibliografias/basicas")

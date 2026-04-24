@@ -1,6 +1,7 @@
 package com.example.disciplinas.educacao.service;
 
 import com.example.disciplinas.educacao.dto.FormacaoProfessorRequest;
+import com.example.disciplinas.educacao.dto.ProfessorPortalResponse;
 import com.example.disciplinas.educacao.dto.ProfessorRequest;
 import com.example.disciplinas.educacao.entity.Escola;
 import com.example.disciplinas.educacao.entity.FormacaoProfessor;
@@ -15,6 +16,7 @@ import com.example.disciplinas.educacao.repository.ProfessorRepository;
 import com.example.disciplinas.educacao.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -45,24 +47,57 @@ public class ProfessorService {
 
     public Professor buscar(Long id) {
         return professorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Professor nao encontrado com id " + id));
     }
 
     public Professor buscarPorUsername(String username) {
         Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario nao encontrado"));
         if (usuario.getProfessor() == null) {
-            throw new ResourceNotFoundException("Usuário não está vinculado a um professor");
+            throw new ResourceNotFoundException("Usuario nao esta vinculado a um professor");
         }
         return usuario.getProfessor();
     }
 
+    @Transactional(readOnly = true)
+    public ProfessorPortalResponse buscarPortalPorUsername(String username) {
+        Professor professor = buscarPorUsername(username);
+
+        List<ProfessorPortalResponse.FormacaoResumo> formacoes = professor.getFormacoes() == null
+                ? List.of()
+                : professor.getFormacoes().stream()
+                .map(formacao -> new ProfessorPortalResponse.FormacaoResumo(
+                        formacao.getId(),
+                        formacao.getCategoriaTitulacao().name(),
+                        formacao.getInstituicaoConclusao(),
+                        formacao.getNomeCurso(),
+                        formacao.getAnoConclusao()
+                ))
+                .toList();
+
+        return new ProfessorPortalResponse(
+                professor.getId(),
+                professor.getMatricula(),
+                professor.getNomeCompleto(),
+                professor.getEmail(),
+                professor.getTelefone(),
+                professor.getAtivo(),
+                professor.getEscola() == null
+                        ? null
+                        : new ProfessorPortalResponse.EscolaResumo(
+                        professor.getEscola().getId(),
+                        professor.getEscola().getNome()
+                ),
+                formacoes
+        );
+    }
+
     public Professor salvar(ProfessorRequest request) {
         Escola escola = escolaRepository.findById(request.getEscolaId())
-                .orElseThrow(() -> new ResourceNotFoundException("Escola não encontrada com id " + request.getEscolaId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Escola nao encontrada com id " + request.getEscolaId()));
 
         if (professorRepository.existsByMatricula(request.getMatricula())) {
-            throw new BusinessRuleException("Já existe professor com essa matrícula");
+            throw new BusinessRuleException("Ja existe professor com essa matricula");
         }
 
         Professor professor = new Professor();
@@ -74,12 +109,13 @@ public class ProfessorService {
         professor.setEscola(escola);
         professor = professorRepository.save(professor);
 
-        if (request.getUsername() != null && !request.getUsername().isBlank() && request.getPassword() != null && !request.getPassword().isBlank()) {
+        if (request.getUsername() != null && !request.getUsername().isBlank()
+                && request.getPassword() != null && !request.getPassword().isBlank()) {
             Usuario usuario = new Usuario();
             usuario.setUsername(request.getUsername());
             usuario.setPassword(passwordEncoder.encode(request.getPassword()));
             usuario.setRole(RoleName.ROLE_PROFESSOR);
-            usuario.setEnabled(true);
+            usuario.setEnabled(professor.getAtivo());
             usuario.setProfessor(professor);
             usuarioRepository.save(usuario);
         }
@@ -90,7 +126,7 @@ public class ProfessorService {
     public Professor atualizar(Long id, ProfessorRequest request) {
         Professor professor = buscar(id);
         Escola escola = escolaRepository.findById(request.getEscolaId())
-                .orElseThrow(() -> new ResourceNotFoundException("Escola não encontrada com id " + request.getEscolaId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Escola nao encontrada com id " + request.getEscolaId()));
 
         professor.setMatricula(request.getMatricula());
         professor.setNomeCompleto(request.getNomeCompleto());
@@ -98,12 +134,21 @@ public class ProfessorService {
         professor.setTelefone(request.getTelefone());
         professor.setAtivo(request.getAtivo() == null || request.getAtivo());
         professor.setEscola(escola);
+        atualizarStatusUsuario(professor, professor.getAtivo());
         return professorRepository.save(professor);
     }
 
     public Professor inativar(Long id) {
         Professor professor = buscar(id);
         professor.setAtivo(false);
+        atualizarStatusUsuario(professor, false);
+        return professorRepository.save(professor);
+    }
+
+    public Professor ativar(Long id) {
+        Professor professor = buscar(id);
+        professor.setAtivo(true);
+        atualizarStatusUsuario(professor, true);
         return professorRepository.save(professor);
     }
 
@@ -125,5 +170,15 @@ public class ProfessorService {
         formacao.setNomeCurso(request.getNomeCurso());
         formacao.setAnoConclusao(request.getAnoConclusao());
         return formacaoProfessorRepository.save(formacao);
+    }
+
+    private void atualizarStatusUsuario(Professor professor, Boolean ativo) {
+        if (professor.getUsuario() == null) {
+            return;
+        }
+
+        Usuario usuario = professor.getUsuario();
+        usuario.setEnabled(Boolean.TRUE.equals(ativo));
+        usuarioRepository.save(usuario);
     }
 }

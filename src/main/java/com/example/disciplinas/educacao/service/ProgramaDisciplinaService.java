@@ -74,6 +74,15 @@ public class ProgramaDisciplinaService {
         return programaRepository.findByDisciplinaProfessorId(professorId);
     }
 
+    @Transactional(readOnly = true)
+    public List<ProgramaDisciplinaResponse> listarDoProfessorDetalhado(String username, ProfessorService professorService) {
+        Long professorId = professorService.buscarPorUsername(username).getId();
+        return programaRepository.findByDisciplinaProfessorId(professorId)
+                .stream()
+                .map(this::mapearResposta)
+                .toList();
+    }
+
     public List<ProgramaDisciplina> listarIncompletos() {
         return programaRepository.findAll().stream().filter(this::isIncompleto).toList();
     }
@@ -83,6 +92,16 @@ public class ProgramaDisciplinaService {
         return programaRepository.findByAtivoTrueAndDisciplinaProfessorId(professorId)
                 .stream()
                 .filter(this::isIncompleto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProgramaDisciplinaResponse> listarIncompletosDoProfessorDetalhado(String username, ProfessorService professorService) {
+        Long professorId = professorService.buscarPorUsername(username).getId();
+        return programaRepository.findByAtivoTrueAndDisciplinaProfessorId(professorId)
+                .stream()
+                .filter(this::isIncompleto)
+                .map(this::mapearResposta)
                 .toList();
     }
 
