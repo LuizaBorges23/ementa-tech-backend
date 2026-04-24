@@ -108,17 +108,7 @@ public class ProfessorService {
         professor.setAtivo(request.getAtivo() == null || request.getAtivo());
         professor.setEscola(escola);
         professor = professorRepository.save(professor);
-
-        if (request.getUsername() != null && !request.getUsername().isBlank()
-                && request.getPassword() != null && !request.getPassword().isBlank()) {
-            Usuario usuario = new Usuario();
-            usuario.setUsername(request.getUsername());
-            usuario.setPassword(passwordEncoder.encode(request.getPassword()));
-            usuario.setRole(RoleName.ROLE_PROFESSOR);
-            usuario.setEnabled(professor.getAtivo());
-            usuario.setProfessor(professor);
-            usuarioRepository.save(usuario);
-        }
+        sincronizarUsuarioAcesso(professor, request);
 
         return professor;
     }
@@ -134,7 +124,7 @@ public class ProfessorService {
         professor.setTelefone(request.getTelefone());
         professor.setAtivo(request.getAtivo() == null || request.getAtivo());
         professor.setEscola(escola);
-        atualizarStatusUsuario(professor, professor.getAtivo());
+        sincronizarUsuarioAcesso(professor, request);
         return professorRepository.save(professor);
     }
 
@@ -179,6 +169,37 @@ public class ProfessorService {
 
         Usuario usuario = professor.getUsuario();
         usuario.setEnabled(Boolean.TRUE.equals(ativo));
+        usuarioRepository.save(usuario);
+    }
+
+    private void sincronizarUsuarioAcesso(Professor professor, ProfessorRequest request) {
+        String username = request.getUsername() == null ? "" : request.getUsername().trim();
+        String password = request.getPassword() == null ? "" : request.getPassword().trim();
+        Usuario usuario = professor.getUsuario();
+
+        if (usuario == null) {
+            if (username.isBlank() && password.isBlank()) {
+                return;
+            }
+
+            if (username.isBlank() || password.isBlank()) {
+                throw new BusinessRuleException("Informe username e password para criar o acesso do professor");
+            }
+
+            usuario = new Usuario();
+            usuario.setProfessor(professor);
+            usuario.setRole(RoleName.ROLE_PROFESSOR);
+        }
+
+        if (!username.isBlank()) {
+            usuario.setUsername(username);
+        }
+
+        if (!password.isBlank()) {
+            usuario.setPassword(passwordEncoder.encode(password));
+        }
+
+        usuario.setEnabled(Boolean.TRUE.equals(professor.getAtivo()));
         usuarioRepository.save(usuario);
     }
 }

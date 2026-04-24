@@ -1,6 +1,6 @@
 package com.example.disciplinas.educacao.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class InstituicaoEnsinoSuperior {
     private String telefone;
 
     @OneToMany(mappedBy = "ies")
-    @JsonIgnoreProperties({"ies", "cursos", "professores"})
+    @JsonIgnore
     private List<Escola> escolas = new ArrayList<>();
 
     public Long getId() {

@@ -53,6 +53,12 @@ public class CursoService {
         return cursoRepository.save(curso);
     }
 
+    public Curso ativar(Long id) {
+        Curso curso = buscar(id);
+        curso.setAtivo(true);
+        return cursoRepository.save(curso);
+    }
+
     private void preencher(Curso curso, CursoRequest request) {
         Escola escola = escolaRepository.findById(request.getEscolaId())
                 .orElseThrow(() -> new ResourceNotFoundException("Escola não encontrada com id " + request.getEscolaId()));

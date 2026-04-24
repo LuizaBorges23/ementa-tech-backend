@@ -44,4 +44,9 @@ public class AdminCursoController {
     public ResponseEntity<Curso> inativar(@PathVariable Long id) {
         return ResponseEntity.ok(service.inativar(id));
     }
+
+    @PatchMapping("/{id}/ativar")
+    public ResponseEntity<Curso> ativar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.ativar(id));
+    }
 }

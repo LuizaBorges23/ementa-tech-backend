@@ -1,5 +1,6 @@
 package com.example.disciplinas.educacao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -29,11 +30,11 @@ public class Escola {
     private InstituicaoEnsinoSuperior ies;
 
     @OneToMany(mappedBy = "escola")
-    @JsonIgnoreProperties({"escola", "matrizes", "coordenadorCurso", "disciplinas"})
+    @JsonIgnore
     private List<Curso> cursos = new ArrayList<>();
 
     @OneToMany(mappedBy = "escola")
-    @JsonIgnoreProperties({"escola", "formacoes", "usuario", "disciplinas"})
+    @JsonIgnore
     private List<Professor> professores = new ArrayList<>();
 
     public Long getId() {
