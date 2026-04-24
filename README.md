@@ -96,5 +96,4 @@ E use **Basic Auth** com um dos usuários acima.
 - `GET /relatorios/programas/{id}`
 - `GET /relatorios/programas/incompletos`
 
-## Observação honesta
-Esta versão foi preparada para ficar muito mais aderente ao cenário. Aqui no ambiente eu não consegui baixar dependências Maven da internet para executar o build completo, então a validação final precisa ser feita no seu computador.
+
